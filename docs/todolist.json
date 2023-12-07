@@ -1,0 +1,239 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "todolist RESTful api",
+        "version": "1.0",
+        "contact": {
+            "name": "wirawan mahardika",
+            "email": "wirawanmahardika10@gmail.com",
+            "url": "http://localhost:4000"
+        },
+        "termsOfService": "http://wirawan-mahardika.github.io/wirawan-mahardika",
+        "license": {
+            "name": "APACHE 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        }
+    },
+    "servers": [
+        {
+            "description": "todolist RESTful api server",
+            "url": "http:/{environment}.wira-portfolio.io/api/v1",
+            "variables": {
+                "environment": {
+                    "default": "dev",
+                    "enum": [
+                        "dev", "qa", "prod"
+                    ]
+                }
+            }
+        },
+        {
+            "description": "local api",
+            "url": "http://localhost:1000/api/v1"
+        }
+    ],
+    "externalDocs": {
+        "description": "Portfolio wirawan mahardika",
+        "url": "http://wirawan-mahardika.github.io/wirawan-mahardika"
+    },
+    "paths": {
+       "/api/v1/todo": {
+            "get": {
+                "tags": ["todo"],
+                "summary": "get all todo by default",
+                "description": "get all todo if the query is not specified, and it will get todo based on query param named todo if it's specified",
+                "parameters": [
+                    {
+                        "name": "todo",
+                        "in": "query",
+                        "required": false,
+                        "schema": { "type": "string" },
+                        "example": "brushing teeth"
+                    }
+                ], 
+                "responses": {
+                    "200": {
+                        "description": "success get todo/todos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/web-response"
+                                },
+                                "example": {
+                                  "code": 200,
+                                  "message": "succesfully get todo/todos",
+                                  "data": [
+                                    {
+                                      "id_todo": 50,
+                                      "activity": "brush teeth",
+                                      "finish_target": "2023-12-05, 22:00",
+                                      "created_at": "2023-12-05, 18:00"
+                                    },
+                                    {
+                                      "id_todo": 53,
+                                      "activity": "sleep",
+                                      "finish_target": "2023-12-05, 22:20",
+                                      "created_at": "2023-12-05, 18:00"
+                                    }
+                                  ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "todo doesn't exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/web-response"
+                                },
+                                "example": {
+                                  "code": 404,
+                                  "message": "todo you're looking for doesn't exist"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["todo"],
+                "summary": "create new todo",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "activity": {
+                                        "type": "string"
+                                    },
+                                    "finish_target": {
+                                        "type": "object",
+                                        "description": "datetime data type"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "activity": "morning workout",
+                                "finish_target": "2023-12-07T19:16:22.362Z"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success create new todo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/web-response"
+                                },
+                                "example": {
+                                    "code": 200,
+                                    "message": "success create new todo",
+                                    "data": {
+                                        "id_todo": 23,
+                                        "activity": "morning workout",
+                                        "finish_target": "2023-12-07T19:16:22.362Z",
+                                        "created_at": "2023-12-06T19:16:22.362Z"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                      "description": "validation error",
+                      "content": {
+                        "application/json": {
+                          "schema": {
+                            "$ref": "#/components/schemas/web-response"
+                          },
+                          "example": {
+                            "code": 400,
+                            "message": "finish_target is required"
+                          }
+                        }
+                      }
+                    }
+                }
+            }
+        },
+        "/api/v1/todo/{id_todo}": {
+            "get": {
+                "tags": ["todo"],
+                "summary": "get todo by id_todo",
+                "description": "get todo by id_todo that being specified in the path",
+                "parameters": [
+                    {
+                        "name": "id_todo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": {
+                                "id_todo": 2
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "success get todo",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/web-response"
+                        },
+                        "example": {
+                          "code": 200,
+                          "message": "succesfully get todo with id 12",
+                          "data": {
+                            "id_todo": 12,
+                            "activity": "go to campus",
+                            "finish_target": "2023-05-06, 07:30",
+                            "created_at": "2023-05-06, 05:30"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "404": {
+                    "description": "todo doesn't exist",
+                    "content": {
+                      "application/json": {
+                        "schema": {
+                          "$ref": "#/components/schemas/web-response"
+                        },
+                        "example": {
+                          "code": 404,
+                          "message": "todo you're looking for doesn't exist"
+                        }
+                      }
+                    }
+                  }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "web-response": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number",
+                        "nullable": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "data": {
+                        "nullable": true
+                    }
+                }
+            }
+        }
+    }
+}
