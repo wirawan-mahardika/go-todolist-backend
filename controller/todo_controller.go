@@ -52,7 +52,7 @@ func (controller *todoControllerImpl) Create(w http.ResponseWriter, r *http.Requ
 	todoResponse := controller.service.Create(r.Context(), request)
 	webResponse := web.WebResponse{
 		Code:    200,
-		Message: "succesfully get todo with id " + strconv.Itoa(todoResponse.Id_todo),
+		Message: "success create new todo",
 		Data:    todoResponse,
 	}
 
