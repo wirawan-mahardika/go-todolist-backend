@@ -15,6 +15,7 @@ type TodoController interface {
 	FindById(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	Create(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	SearchOrFindAll(w http.ResponseWriter, r *http.Request, p httprouter.Params)
+	Update(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 }
 
 func NewTodoController(service service.TodoService) TodoController {
@@ -75,5 +76,27 @@ func (controller *todoControllerImpl) SearchOrFindAll(w http.ResponseWriter, r *
 	w.Header().Add("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	err := encoder.Encode(webResponse)
+	helper.PanicIfError(err)
+}
+
+func (controller *todoControllerImpl) Update(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	id_todo, err := strconv.Atoi(p.ByName("id_todo"))
+	helper.PanicIfError(err)
+
+	request := web.TodoRequestUpdate{Id: id_todo}
+	decoder := json.NewDecoder(r.Body)
+	err = decoder.Decode(&request)
+	helper.PanicIfError(err)
+
+	todoResponse := controller.service.Update(r.Context(), request)
+	webResponse := web.WebResponse{
+		Code:    200,
+		Message: "succesfully update todo with id " + p.ByName("id_todo"),
+		Data:    todoResponse,
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	encoder := json.NewEncoder(w)
+	err = encoder.Encode(webResponse)
 	helper.PanicIfError(err)
 }

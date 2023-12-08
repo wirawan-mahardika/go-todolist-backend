@@ -15,6 +15,12 @@ type TodoRequestSearchOrFindAll struct {
 	Activity string `json:"activity"`
 }
 
+type TodoRequestUpdate struct {
+	Id           int       `json:"id_todo"`
+	Activity     string    `json:"activity"`
+	FinishTarget time.Time `json:"finish_target"`
+}
+
 type TodoResponse struct {
 	Id_todo      int       `json:"id_todo"`
 	Activity     string    `json:"activity"`

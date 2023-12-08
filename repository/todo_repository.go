@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"time"
 	"todolist/exception"
 	"todolist/helper"
 	"todolist/model/entity"
@@ -13,6 +14,7 @@ type TodoRepository interface {
 	FindById(ctx context.Context, tx *sql.Tx, id int) (entity.Todo, error)
 	Create(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error)
 	SearchOrFindAll(ctx context.Context, tx *sql.Tx, activity string) ([]entity.Todo, error)
+	Update(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error)
 }
 
 type todoRepositoryImpl struct{}
@@ -77,4 +79,32 @@ func (repo *todoRepositoryImpl) SearchOrFindAll(ctx context.Context, tx *sql.Tx,
 	}
 
 	return todos, nil
+}
+
+func (repo *todoRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error) {
+	script := "UPDATE todo SET "
+	args := []any{}
+	if todo.Activity != "" {
+		script += "activity = ?"
+		args = append(args, todo.Activity)
+	}
+	defaultTime := time.Time{}
+	if todo.Finish_target != defaultTime {
+		if len(args) > 0 {
+			script += ", "
+		}
+		script += "finish_target = ?"
+		args = append(args, todo.Finish_target)
+	}
+
+	script += " WHERE id = ?;"
+	args = append(args, todo.Id_todo)
+
+	_, err := tx.ExecContext(ctx, script, args...)
+	helper.PanicIfError(err)
+
+	todo, err = repo.FindById(ctx, tx, todo.Id_todo)
+	helper.PanicIfError(err)
+
+	return todo, nil
 }

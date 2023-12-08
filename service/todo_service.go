@@ -13,6 +13,7 @@ type TodoService interface {
 	FindById(ctx context.Context, request web.TodoRequestFindById) web.TodoResponse
 	Create(ctx context.Context, request web.TodoRequestCreate) web.TodoResponse
 	SearchOrFindAll(ctx context.Context, activity string) []web.TodoResponse
+	Update(ctx context.Context, request web.TodoRequestUpdate) web.TodoResponse
 }
 
 func NewTodoService(repo repository.TodoRepository, db *sql.DB) TodoService {
@@ -81,6 +82,29 @@ func (service *todoServiceImpl) SearchOrFindAll(ctx context.Context, activity st
 			FinishTarget: todo.Finish_target,
 			CreatedAt:    todo.Created_at,
 		})
+	}
+
+	return webResponse
+}
+
+func (service *todoServiceImpl) Update(ctx context.Context, request web.TodoRequestUpdate) web.TodoResponse {
+	tx, err := service.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	todo := entity.Todo{
+		Id_todo:       request.Id,
+		Activity:      request.Activity,
+		Finish_target: request.FinishTarget,
+	}
+	todo, err = service.Repo.Update(ctx, tx, todo)
+	helper.PanicIfError(err)
+
+	webResponse := web.TodoResponse{
+		Id_todo:      todo.Id_todo,
+		Activity:     todo.Activity,
+		FinishTarget: todo.Finish_target,
+		CreatedAt:    todo.Created_at,
 	}
 
 	return webResponse
