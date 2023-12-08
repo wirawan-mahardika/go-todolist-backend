@@ -7,17 +7,17 @@ type TodoRequestFindById struct {
 }
 
 type TodoRequestCreate struct {
-	Activity     string
-	FinishTarget time.Time
+	Activity     string    `json:"activity"`
+	FinishTarget time.Time `json:"finish_target"`
 }
 
 type TodoRequestSearchOrFindAll struct {
-	Activity     string
+	Activity string
 }
 
 type TodoResponse struct {
-	Id_todo      int		`json:"id_todo"`
-	Activity     string 	`json:"activity"`
-	FinishTarget time.Time		`json:"finish_target"`
-	CreatedAt    time.Time  `json:"created_at"`
+	Id_todo      int       `json:"id_todo"`
+	Activity     string    `json:"activity"`
+	FinishTarget time.Time `json:"finish_target"`
+	CreatedAt    time.Time `json:"created_at"`
 }

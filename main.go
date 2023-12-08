@@ -21,6 +21,7 @@ func main() {
 	todoController := controller.NewTodoController(todoService)
 
 	router.GET("/api/v1/todo", todoController.FindById)
+	router.POST("/api/v1/todo", todoController.Create)
 	router.PanicHandler = exception.ErrorHandler
 
 	server := http.Server{

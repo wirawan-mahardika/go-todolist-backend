@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"todolist/exception"
 	"todolist/helper"
 	"todolist/model/entity"
@@ -15,7 +16,7 @@ type TodoRepository interface {
 	SearchOrFindAll(ctx context.Context, tx *sql.Tx, activity string) ([]entity.Todo, error)
 }
 
-type todoRepositoryImpl struct {}
+type todoRepositoryImpl struct{}
 
 func NewTodoRepository() TodoRepository {
 	return &todoRepositoryImpl{}
@@ -36,8 +37,9 @@ func (repo *todoRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, id int
 	return todo, nil
 }
 
-func (repo *todoRepositoryImpl)	Create(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error) {
+func (repo *todoRepositoryImpl) Create(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error) {
 	script := "INSERT INTO todo(activity, finish_target) VALUES(?,?);"
+	fmt.Println(todo)
 	result, err := tx.ExecContext(ctx, script, todo.Activity, todo.Finish_target)
 	helper.PanicIfError(err)
 
@@ -50,7 +52,7 @@ func (repo *todoRepositoryImpl)	Create(ctx context.Context, tx *sql.Tx, todo ent
 	return todo, nil
 }
 
-func (repo *todoRepositoryImpl)	SearchOrFindAll(ctx context.Context, tx *sql.Tx, activity string) ([]entity.Todo, error) {
+func (repo *todoRepositoryImpl) SearchOrFindAll(ctx context.Context, tx *sql.Tx, activity string) ([]entity.Todo, error) {
 	var rows *sql.Rows
 	var err error
 	if activity != "" {

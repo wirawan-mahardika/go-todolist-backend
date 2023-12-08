@@ -29,12 +29,12 @@ func (controller *todoControllerImpl) FindById(w http.ResponseWriter, r *http.Re
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	helper.PanicIfError(err)
 	request := web.TodoRequestFindById{Id: id}
-	
+
 	todoResponse := controller.service.FindById(r.Context(), request)
 	webResponse := web.WebResponse{
-		Code: 200,
+		Code:    200,
 		Message: "succesfully get todo with id " + strconv.Itoa(todoResponse.Id_todo),
-		Data: todoResponse,
+		Data:    todoResponse,
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -45,11 +45,21 @@ func (controller *todoControllerImpl) FindById(w http.ResponseWriter, r *http.Re
 
 func (controller *todoControllerImpl) Create(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	decoder := json.NewDecoder(r.Body)
-	request := web.TodoRequestFindById{}
+	request := web.TodoRequestCreate{}
 	err := decoder.Decode(&request)
 	helper.PanicIfError(err)
 
+	todoResponse := controller.service.Create(r.Context(), request)
+	webResponse := web.WebResponse{
+		Code:    200,
+		Message: "succesfully get todo with id " + strconv.Itoa(todoResponse.Id_todo),
+		Data:    todoResponse,
+	}
 
+	w.Header().Add("Content-Type", "application/json")
+	encoder := json.NewEncoder(w)
+	err = encoder.Encode(webResponse)
+	helper.PanicIfError(err)
 }
 
 func (controller *todoControllerImpl) SearchOrFindAll(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -57,6 +67,5 @@ func (controller *todoControllerImpl) SearchOrFindAll(w http.ResponseWriter, r *
 	request := web.TodoRequestFindById{}
 	err := decoder.Decode(&request)
 	helper.PanicIfError(err)
-
 
 }
