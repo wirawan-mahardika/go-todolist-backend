@@ -15,6 +15,7 @@ type TodoRepository interface {
 	Create(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error)
 	SearchOrFindAll(ctx context.Context, tx *sql.Tx, activity string) ([]entity.Todo, error)
 	Update(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error)
+	Delete(ctx context.Context, tx *sql.Tx, id int) error
 }
 
 type todoRepositoryImpl struct{}
@@ -107,4 +108,12 @@ func (repo *todoRepositoryImpl) Update(ctx context.Context, tx *sql.Tx, todo ent
 	helper.PanicIfError(err)
 
 	return todo, nil
+}
+
+func (repo *todoRepositoryImpl) Delete(ctx context.Context, tx *sql.Tx, id int) error {
+	script := "DELETE FROM todo WHERE id = ?"
+	_, err := tx.ExecContext(ctx, script, id)
+	helper.PanicIfError(err)
+
+	return nil
 }

@@ -14,6 +14,7 @@ type TodoService interface {
 	Create(ctx context.Context, request web.TodoRequestCreate) web.TodoResponse
 	SearchOrFindAll(ctx context.Context, activity string) []web.TodoResponse
 	Update(ctx context.Context, request web.TodoRequestUpdate) web.TodoResponse
+	Delete(ctx context.Context, request web.TodoRequestDelete)
 }
 
 func NewTodoService(repo repository.TodoRepository, db *sql.DB) TodoService {
@@ -108,4 +109,14 @@ func (service *todoServiceImpl) Update(ctx context.Context, request web.TodoRequ
 	}
 
 	return webResponse
+}
+
+func (service *todoServiceImpl) Delete(ctx context.Context, request web.TodoRequestDelete) {
+	tx, err := service.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollback(tx)
+
+	err = service.Repo.Delete(ctx, tx, request.Id)
+	helper.PanicIfError(err)
+
 }

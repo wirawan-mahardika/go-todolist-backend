@@ -21,6 +21,10 @@ type TodoRequestUpdate struct {
 	FinishTarget time.Time `json:"finish_target"`
 }
 
+type TodoRequestDelete struct {
+	Id int `json:"id_todo"`
+}
+
 type TodoResponse struct {
 	Id_todo      int       `json:"id_todo"`
 	Activity     string    `json:"activity"`

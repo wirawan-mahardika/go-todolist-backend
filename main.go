@@ -24,6 +24,7 @@ func main() {
 	router.GET("/api/v1/todo/:id_todo", todoController.FindById)
 	router.POST("/api/v1/todo", todoController.Create)
 	router.PATCH("/api/v1/todo/:id_todo", todoController.Update)
+	router.DELETE("/api/v1/todo/:id_todo", todoController.Delete)
 	router.PanicHandler = exception.ErrorHandler
 
 	server := http.Server{
