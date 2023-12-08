@@ -1,10 +1,10 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"todolist/app"
 	"todolist/controller"
+	"todolist/exception"
 	"todolist/repository"
 	"todolist/service"
 
@@ -21,16 +21,15 @@ func main() {
 	todoController := controller.NewTodoController(todoService)
 
 	router.GET("/api/v1/todo", todoController.FindById)
-	router.PanicHandler = func(w http.ResponseWriter, r *http.Request, i interface{}) {
-		log.Println(i)
-		http.Error(w, i.(string), http.StatusInternalServerError)
-	}
+	router.PanicHandler = exception.ErrorHandler
 
 	server := http.Server{
-		Addr: "localhost:1000", 
+		Addr:    "localhost:1000",
 		Handler: router,
 	}
 
 	err := server.ListenAndServe()
-	if err != nil { panic(err) }
+	if err != nil {
+		panic(err)
+	}
 }

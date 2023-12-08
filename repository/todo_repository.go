@@ -3,6 +3,8 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
+	"todolist/exception"
 	"todolist/helper"
 	"todolist/model/entity"
 )
@@ -29,7 +31,7 @@ func (repo *todoRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, id int
 		err = row.Scan(&todo.Id_todo, &todo.Activity, &todo.Finish_target, &todo.Created_at)
 		helper.PanicIfError(err)
 	} else {
-		panic("todo is not found")
+		panic(exception.NewNotFoundError(errors.New("todo tidak ditemukan")))
 	}
 	return todo, nil
 }
@@ -67,6 +69,10 @@ func (repo *todoRepositoryImpl)	SearchOrFindAll(ctx context.Context, tx *sql.Tx,
 		err = rows.Scan(&todo.Id_todo, &todo.Activity, &todo.Finish_target, &todo.Created_at)
 		helper.PanicIfError(err)
 		todos = append(todos, todo)
+	}
+
+	if len(todos) < 1 {
+		panic(exception.NewNotFoundError(errors.New("todo tidak ditemukan")))
 	}
 
 	return todos, nil
