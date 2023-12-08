@@ -20,7 +20,8 @@ func main() {
 	todoService := service.NewTodoService(todoRepo, db)
 	todoController := controller.NewTodoController(todoService)
 
-	router.GET("/api/v1/todo", todoController.FindById)
+	router.GET("/api/v1/todo", todoController.SearchOrFindAll)
+	router.GET("/api/v1/todo/:id_todo", todoController.FindById)
 	router.POST("/api/v1/todo", todoController.Create)
 	router.PanicHandler = exception.ErrorHandler
 

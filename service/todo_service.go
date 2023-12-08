@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"todolist/helper"
 	"todolist/model/entity"
 	"todolist/model/web"
@@ -47,8 +46,6 @@ func (service *todoServiceImpl) Create(ctx context.Context, request web.TodoRequ
 	tx, err := service.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
-
-	fmt.Println(request)
 
 	todo := entity.Todo{
 		Activity:      request.Activity,

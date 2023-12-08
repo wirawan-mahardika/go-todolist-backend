@@ -12,7 +12,7 @@ type TodoRequestCreate struct {
 }
 
 type TodoRequestSearchOrFindAll struct {
-	Activity string
+	Activity string `json:"activity"`
 }
 
 type TodoResponse struct {

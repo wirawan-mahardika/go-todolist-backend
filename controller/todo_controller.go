@@ -26,7 +26,7 @@ type todoControllerImpl struct {
 }
 
 func (controller *todoControllerImpl) FindById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	id, err := strconv.Atoi(p.ByName("id_todo"))
 	helper.PanicIfError(err)
 	request := web.TodoRequestFindById{Id: id}
 
@@ -63,9 +63,17 @@ func (controller *todoControllerImpl) Create(w http.ResponseWriter, r *http.Requ
 }
 
 func (controller *todoControllerImpl) SearchOrFindAll(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	decoder := json.NewDecoder(r.Body)
-	request := web.TodoRequestFindById{}
-	err := decoder.Decode(&request)
-	helper.PanicIfError(err)
+	request := web.TodoRequestSearchOrFindAll{Activity: r.URL.Query().Get("activity")}
 
+	todoResponse := controller.service.SearchOrFindAll(r.Context(), request.Activity)
+	webResponse := web.WebResponse{
+		Code:    200,
+		Message: "succesfully get todos",
+		Data:    todoResponse,
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(webResponse)
+	helper.PanicIfError(err)
 }
