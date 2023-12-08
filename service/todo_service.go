@@ -26,11 +26,11 @@ type todoServiceImpl struct {
 
 func (service *todoServiceImpl) FindById(ctx context.Context, request web.TodoRequestFindById) (web.TodoResponse) {
 	tx, err := service.DB.Begin()
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	todo, err := service.Repo.FindById(ctx, tx, request.Id)
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 	webResponse := web.TodoResponse{
 		Id_todo: todo.Id_todo,
@@ -44,7 +44,7 @@ func (service *todoServiceImpl) FindById(ctx context.Context, request web.TodoRe
 
 func (service *todoServiceImpl) Create(ctx context.Context, request web.TodoRequestCreate) (web.TodoResponse) {
 	tx, err := service.DB.Begin()
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	todo := entity.Todo{
@@ -53,7 +53,7 @@ func (service *todoServiceImpl) Create(ctx context.Context, request web.TodoRequ
 	}
 	
 	todo, err = service.Repo.Create(ctx, tx, todo)
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 	webResponse := web.TodoResponse{
 		Id_todo: todo.Id_todo,
@@ -67,11 +67,11 @@ func (service *todoServiceImpl) Create(ctx context.Context, request web.TodoRequ
 
 func (service *todoServiceImpl) SearchOrFindAll(ctx context.Context, activity string) ([]web.TodoResponse) {
 	tx, err := service.DB.Begin()
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 	defer helper.CommitOrRollback(tx)
 
 	todos, err := service.Repo.SearchOrFindAll(ctx, tx, activity)
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 
 	webResponse := make([]web.TodoResponse, 0, len(todos))

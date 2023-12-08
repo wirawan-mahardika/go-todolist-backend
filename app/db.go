@@ -8,7 +8,7 @@ import (
 )
 
 func GetDBConnection() *sql.DB {
-	db, err := sql.Open("mysql", "roo:wm050604@tcp(localhost:3306)/tododolist?parseTime=true")
+	db, err := sql.Open("mysql", "root:wm050604@tcp(localhost:3306)/todolist?parseTime=true")
 	if err != nil { panic(err) }
 
 	db.SetMaxIdleConns(5)

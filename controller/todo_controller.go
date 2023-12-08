@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"todolist/helper"
 	"todolist/model/web"
 	"todolist/service"
 
@@ -25,11 +26,10 @@ type todoControllerImpl struct {
 }
 
 func (controller *todoControllerImpl) FindById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	decoder := json.NewDecoder(r.Body)
-	request := web.TodoRequestFindById{}
-	err := decoder.Decode(&request)
-	if err != nil { panic(err) }
-
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	helper.PanicIfError(err)
+	request := web.TodoRequestFindById{Id: id}
+	
 	todoResponse := controller.service.FindById(r.Context(), request)
 	webResponse := web.WebResponse{
 		Code: 200,
@@ -40,14 +40,14 @@ func (controller *todoControllerImpl) FindById(w http.ResponseWriter, r *http.Re
 	w.Header().Add("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 	err = encoder.Encode(webResponse)
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 }
 
 func (controller *todoControllerImpl) Create(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	decoder := json.NewDecoder(r.Body)
 	request := web.TodoRequestFindById{}
 	err := decoder.Decode(&request)
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 
 }
@@ -56,7 +56,7 @@ func (controller *todoControllerImpl) SearchOrFindAll(w http.ResponseWriter, r *
 	decoder := json.NewDecoder(r.Body)
 	request := web.TodoRequestFindById{}
 	err := decoder.Decode(&request)
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 
 }

@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"todolist/helper"
 	"todolist/model/entity"
 )
 
@@ -13,38 +13,37 @@ type TodoRepository interface {
 	SearchOrFindAll(ctx context.Context, tx *sql.Tx, activity string) ([]entity.Todo, error)
 }
 
+type todoRepositoryImpl struct {}
+
 func NewTodoRepository() TodoRepository {
 	return &todoRepositoryImpl{}
 }
 
-type todoRepositoryImpl struct {}
-
 func (repo *todoRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, id int) (entity.Todo, error) {
-	script := "SELECT id_todo, activity, finish_target, created_at FROM todo WHERE id = ? LIMIT 1;"
+	script := "SELECT id, activity, finish_target, created_at FROM todo WHERE id = ? LIMIT 1;"
 	row, err := tx.QueryContext(ctx, script, id)
-	if err != nil { panic(err) }	
+	helper.PanicIfError(err)
 
 	todo := entity.Todo{}
 	if row.Next() {
 		err = row.Scan(&todo.Id_todo, &todo.Activity, &todo.Finish_target, &todo.Created_at)
-		if err != nil { panic(err) }
+		helper.PanicIfError(err)
 	} else {
-		return todo, errors.New("todo is not found")
+		panic("todo is not found")
 	}
-	
 	return todo, nil
 }
 
 func (repo *todoRepositoryImpl)	Create(ctx context.Context, tx *sql.Tx, todo entity.Todo) (entity.Todo, error) {
 	script := "INSERT INTO todo(activity, finish_target) VALUES(?,?);"
 	result, err := tx.ExecContext(ctx, script, todo.Activity, todo.Finish_target)
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 	id, err := result.LastInsertId()
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 	todo, err = repo.FindById(ctx, tx, int(id))
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 	return todo, nil
 }
@@ -60,13 +59,13 @@ func (repo *todoRepositoryImpl)	SearchOrFindAll(ctx context.Context, tx *sql.Tx,
 		rows, err = tx.QueryContext(ctx, script)
 	}
 
-	if err != nil { panic(err) }
+	helper.PanicIfError(err)
 
 	todos := []entity.Todo{}
 	for rows.Next() {
 		todo := entity.Todo{}
 		err = rows.Scan(&todo.Id_todo, &todo.Activity, &todo.Finish_target, &todo.Created_at)
-		if err != nil { panic(err) }
+		helper.PanicIfError(err)
 		todos = append(todos, todo)
 	}
 
