@@ -213,6 +213,75 @@
                     }
                   }
                 }
+            },
+            "patch": {
+                "tags": ["todo"],
+                "summary": "update todo by id",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "id_todo",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "activity": {
+                                        "type": "string"
+                                    },
+                                    "finish_target": {
+                                        "type": "object",
+                                        "description": "time data type"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success update todo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/web-response"
+                                },
+                                "example": {
+                                    "code": 200,
+                                    "message": "succesfully update todo with id 12",
+                                    "data": {
+                                        "id_todo": 12,
+                                        "activity": "go to campus",
+                                        "finish_target": "2023-05-06, 07:30",
+                                        "created_at": "2023-05-06, 05:30"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed update todo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/web-response"
+                                },
+                                "example": {
+                                    "code": 400,
+                                    "message": "todo with id 12 is not exist",
+                                    "data": null
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
