@@ -282,6 +282,52 @@
                         }
                     }
                 }
+            },
+            "delete": {
+                "tags": ["todo"],
+                "summary": "delete todo by id",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "id_todo",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success delete todo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/web-response"
+                                },
+                                "example": {
+                                    "code": 200,
+                                    "message": "succesfully delete todo with id 12",
+                                    "data": null
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "failed delete todo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/web-response"
+                                },
+                                "example": {
+                                    "code": 400,
+                                    "message": "todo with id 12 is not exist",
+                                    "data": null
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
