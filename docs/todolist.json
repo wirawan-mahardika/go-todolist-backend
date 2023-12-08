@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "todolist RESTful api",
+        "title": "Todolist RESTful api",
         "version": "1.0",
         "contact": {
             "name": "wirawan mahardika",
@@ -44,7 +44,7 @@
                 "description": "get all todo if the query is not specified, and it will get todo based on query param named todo if it's specified",
                 "parameters": [
                     {
-                        "name": "todo",
+                        "name": "activity",
                         "in": "query",
                         "required": false,
                         "schema": { "type": "string" },

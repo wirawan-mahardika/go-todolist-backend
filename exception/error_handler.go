@@ -8,6 +8,7 @@ import (
 )
 
 func ErrorHandler(w http.ResponseWriter, r *http.Request, i interface{}) {
+	w.Header().Add("Content-Type", "application/json")
 
 	if notFound(w, r, i) {
 		return
